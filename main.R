@@ -38,7 +38,7 @@ mofi_results_desial <-
 # finds the mean of an interval given as string
 # e.g. "(101,137]" -> 118
 find_interval_mean <- function(interval) {
-  span <- str_match(interval, "(\\d+),(\\d+)")
+  span <- str_match(interval, "\\((.*),(.*)\\]")
   (as.numeric(span[,2]) + as.numeric(span[,3])) / 2
 }
 
