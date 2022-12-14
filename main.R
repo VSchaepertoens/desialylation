@@ -49,7 +49,6 @@ desialylate <- function(peaks_sial,
                         peaks_desial_exp,
                         mass_desial_peak,
                         filter_peaks = TRUE,
-                        filter_max_peaks = TRUE,
                         filter_hit_score = TRUE,
                         hit_score_cutoff = 0.01,
                         mass_tolerance = 5) {
@@ -94,14 +93,6 @@ desialylate <- function(peaks_sial,
     / mass_tolerance
   )
   
-  # if desired, only keep MoFi hits where the computationally desialylated mass
-  # corresponds to a mass of a given peak (within the given mass_tolerance)
-  if (filter_max_peaks){
-    peaks_desial_comp %>%
-      mutate(mass = mass_desial %>% cut(n_bins) %>% find_interval_mean()) %>%
-      filter(near(mass, mass_desial_peak, tol = mass_tolerance))
-  }
-  
   peaks_desial_comp %>%
     mutate(mass = mass_desial %>% cut(n_bins) %>% find_interval_mean())%>%
     group_by(mass) %>%
@@ -112,24 +103,6 @@ desialylate <- function(peaks_sial,
 
 df_desial <- desialylate(mofi_results_sial, mofi_results_desial, filter_max_peaks = FALSE)
 df_desial <- desialylate(mofi_results_sial, mofi_results_desial, filter_max_peaks = FALSE, hit_score_cutoff = 0.01)
-
-## To find the masses of the desired peaks
-# sort(df_desial$intensity,decreasing=TRUE,index.return= TRUE)
-#
-# df_desial[c(108,159,167,83),]#display top 4 peaks and their masses
-#
-# max_peak2 <- df_desial[c(159),'mass']
-# max_peak3 <- df_desial[c(167),'mass']
-
-mass_peak2 = 110633.5
-mass_peak3 = 110958.5
-df_desial_peak2 <- desialylate(mofi_results_sial, mofi_results_desial,mass_desial_peak = mass_peak2)
-df_desial_peak3 <- desialylate(mofi_results_sial, mofi_results_desial,mass_desial_peak = mass_peak3)
-
-# write.table(df_desial_peak2, file = "df_desial_peak2.txt", sep = "\t",
-#             row.names = TRUE, col.names = NA)
-# write.table(df_desial_peak3, file = "df_desial_peak3.txt", sep = "\t",
-#             row.names = TRUE, col.names = NA)
 
 
 # Plot data ---------------------------------------------------------------
