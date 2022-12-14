@@ -101,8 +101,8 @@ desialylate <- function(peaks_sial,
   
 }
 
-df_desial <- desialylate(mofi_results_sial, mofi_results_desial, filter_max_peaks = FALSE)
-df_desial <- desialylate(mofi_results_sial, mofi_results_desial, filter_max_peaks = FALSE, hit_score_cutoff = 0.01)
+# 1.The intact glycoform annotations were computationally desialylated to obtain a desialylated in silico spectrum of Myozyme
+df_desial <- desialylate(mofi_results_sial, mofi_results_desial, filter_hit_score=FALSE, filter_peaks = FALSE)
 
 
 # Plot data ---------------------------------------------------------------
@@ -126,11 +126,8 @@ bind_rows(
   ylab("relative intensity (%)") +
   theme_bw() +
   theme(panel.grid = element_blank())
-ggsave("plots/desialylated_spectra_experimental_vs_computational_cutoff0.01_.pdf")
+ggsave("plots/desialylated_spectra_experimental_vs_computational_unfiltered.pdf")
 
-
-
-# df_plot <-
 #   bind_rows(
 #     experimental =
 #       mofi_results_sial %>%
