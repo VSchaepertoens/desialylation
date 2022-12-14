@@ -104,6 +104,9 @@ desialylate <- function(peaks_sial,
 # 1.The intact glycoform annotations were computationally desialylated to obtain a desialylated in silico spectrum of Myozyme
 df_desial <- desialylate(mofi_results_sial, mofi_results_desial, filter_hit_score=FALSE, filter_peaks = FALSE)
 
+# 2. The _in silico_ desialylated masses were filtered based on their correspondence with the experimentally desialylated masses and the fractional abundances of the glycoform annotations were normalized to 100%
+df_desial_filtered <- desialylate(mofi_results_sial, mofi_results_desial, filter_hit_score=FALSE, filter_peaks = TRUE)
+
 
 # Plot data ---------------------------------------------------------------
 
@@ -128,24 +131,24 @@ bind_rows(
   theme(panel.grid = element_blank())
 ggsave("plots/desialylated_spectra_experimental_vs_computational_unfiltered.pdf")
 
-#   bind_rows(
-#     experimental =
-#       mofi_results_sial %>%
-#       group_by(peak_id) %>%
-#       summarise(across(c(exp_mass, percent), first)) %>%
-#       select(mass = exp_mass, intensity = percent),
-#     desialylated =
-#       df_desial %>%
-#       mutate(intensity = intensity * -1),
-#     .id = "spectrum"
-#   ) %>%
-#   mutate(spectrum = fct_rev(spectrum))
-#
-# ggplot(df_plot, aes(mass, 0, xend = mass, yend = intensity)) +
-#   geom_segment(aes(color = spectrum)) +
-#   geom_hline(yintercept = 0) +
-#   xlab("mass (Da)") +
-#   ylab("relative intensity (%)") +
-#   theme_bw() +
-#   theme(panel.grid = element_blank())
-# ggsave("spectra_original_desialylated_filtered.pdf")
+bind_rows(
+  experimental =
+    mofi_results_desial %>%
+    group_by(peak_id) %>%
+    summarise(across(c(exp_mass, percent), first)) %>%
+    select(mass = exp_mass, intensity = percent),
+  computational =
+    df_desial_filtered %>%
+    mutate(intensity = intensity * -1),
+  .id = "desialylation"
+) %>%
+  mutate(desialylation = fct_rev(desialylation)) %>%
+  ggplot(aes(mass, 0, xend = mass, yend = intensity)) +
+  geom_segment(aes(color = desialylation)) +
+  geom_hline(yintercept = 0) +
+  xlab("mass (Da)") +
+  ylab("relative intensity (%)") +
+  theme_bw() +
+  theme(panel.grid = element_blank())
+ggsave("plots/desialylated_spectra_experimental_vs_computational_filtered.wmf")
+
