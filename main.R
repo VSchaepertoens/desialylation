@@ -107,6 +107,10 @@ df_desial <- desialylate(mofi_results_sial, mofi_results_desial, filter_hit_scor
 # 2. The _in silico_ desialylated masses were filtered based on their correspondence with the experimentally desialylated masses and the fractional abundances of the glycoform annotations were normalized to 100%
 df_desial_filtered <- desialylate(mofi_results_sial, mofi_results_desial, filter_hit_score=FALSE, filter_peaks = TRUE)
 
+# 3. The _in silico_ desialylated relative abundances were filtered with a cut-off (range from 0.01 to 1) and afterwards the fractional abundances of the glycoform annotations were normalized to 100%
+df_desial_filtered_cutoff <- desialylate(mofi_results_sial, mofi_results_desial, filter_hit_score=TRUE, filter_peaks = TRUE, hit_score_cutoff = 0.01)
+
+
 
 # Plot data ---------------------------------------------------------------
 
@@ -152,3 +156,23 @@ bind_rows(
   theme(panel.grid = element_blank())
 ggsave("plots/desialylated_spectra_experimental_vs_computational_filtered.wmf")
 
+bind_rows(
+  experimental =
+    mofi_results_desial %>%
+    group_by(peak_id) %>%
+    summarise(across(c(exp_mass, percent), first)) %>%
+    select(mass = exp_mass, intensity = percent),
+  computational =
+    df_desial_filtered_cutoff %>%
+    mutate(intensity = intensity * -1),
+  .id = "desialylation"
+) %>%
+  mutate(desialylation = fct_rev(desialylation)) %>%
+  ggplot(aes(mass, 0, xend = mass, yend = intensity)) +
+  geom_segment(aes(color = desialylation)) +
+  geom_hline(yintercept = 0) +
+  xlab("mass (Da)") +
+  ylab("relative intensity (%)") +
+  theme_bw() +
+  theme(panel.grid = element_blank())
+ggsave("plots/desialylated_spectra_experimental_vs_computational_filtered_cutoff0.01.wmf")
