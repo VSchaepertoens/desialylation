@@ -133,69 +133,36 @@ df_desial_filtered_cutoff <- desialylate(
 
 
 
-
-
 # Plot data ---------------------------------------------------------------
 
-bind_rows(
-  experimental =
-    mofi_results_desial %>%
-    group_by(peak_id) %>%
-    summarise(across(c(exp_mass, percent), first)) %>%
-    select(mass = exp_mass, intensity = percent),
-  computational =
-    df_desial %>%
-    mutate(intensity = intensity * -1),
-  .id = "desialylation"
-) %>%
-  mutate(desialylation = fct_rev(desialylation)) %>%
-  ggplot(aes(mass, 0, xend = mass, yend = intensity)) +
-  geom_segment(aes(color = desialylation)) +
-  geom_hline(yintercept = 0) +
-  xlab("mass (Da)") +
-  ylab("relative intensity (%)") +
-  theme_bw() +
-  theme(panel.grid = element_blank())
+plot_spectrum <- function(computational_data) {
+  bind_rows(
+    experimental =
+      mofi_results_desial %>%
+      group_by(peak_id) %>%
+      summarise(across(c(exp_mass, percent), first)) %>%
+      select(mass = exp_mass, intensity = percent),
+    computational =
+      computational_data %>%
+      mutate(intensity = intensity * -1),
+    .id = "desialylation"
+  ) %>%
+    mutate(desialylation = fct_rev(desialylation)) %>%
+    ggplot(aes(mass, 0, xend = mass, yend = intensity)) +
+    geom_segment(aes(color = desialylation)) +
+    geom_hline(yintercept = 0) +
+    xlab("mass (Da)") +
+    ylab("relative intensity (%)") +
+    theme_bw() +
+    theme(panel.grid = element_blank())
+}
+
+
+plot_spectrum(df_desial)
 ggsave("plots/desialylated_spectra_experimental_vs_computational_unfiltered.pdf")
 
-bind_rows(
-  experimental =
-    mofi_results_desial %>%
-    group_by(peak_id) %>%
-    summarise(across(c(exp_mass, percent), first)) %>%
-    select(mass = exp_mass, intensity = percent),
-  computational =
-    df_desial_filtered %>%
-    mutate(intensity = intensity * -1),
-  .id = "desialylation"
-) %>%
-  mutate(desialylation = fct_rev(desialylation)) %>%
-  ggplot(aes(mass, 0, xend = mass, yend = intensity)) +
-  geom_segment(aes(color = desialylation)) +
-  geom_hline(yintercept = 0) +
-  xlab("mass (Da)") +
-  ylab("relative intensity (%)") +
-  theme_bw() +
-  theme(panel.grid = element_blank())
+plot_spectrum(df_desial_filtered)
 ggsave("plots/desialylated_spectra_experimental_vs_computational_filtered.wmf")
 
-bind_rows(
-  experimental =
-    mofi_results_desial %>%
-    group_by(peak_id) %>%
-    summarise(across(c(exp_mass, percent), first)) %>%
-    select(mass = exp_mass, intensity = percent),
-  computational =
-    df_desial_filtered_cutoff %>%
-    mutate(intensity = intensity * -1),
-  .id = "desialylation"
-) %>%
-  mutate(desialylation = fct_rev(desialylation)) %>%
-  ggplot(aes(mass, 0, xend = mass, yend = intensity)) +
-  geom_segment(aes(color = desialylation)) +
-  geom_hline(yintercept = 0) +
-  xlab("mass (Da)") +
-  ylab("relative intensity (%)") +
-  theme_bw() +
-  theme(panel.grid = element_blank())
+plot_spectrum(df_desial_filtered_cutoff)
 ggsave("plots/desialylated_spectra_experimental_vs_computational_filtered_cutoff0.01.wmf")
