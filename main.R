@@ -94,21 +94,44 @@ desialylate <- function(peaks_sial,
   )
   
   peaks_desial_comp %>%
-    mutate(mass = mass_desial %>% cut(n_bins) %>% find_interval_mean())%>%
+    mutate(mass = mass_desial %>% cut(n_bins) %>% find_interval_mean()) %>%
     group_by(mass) %>%
     summarise(intensity = sum(percent)) %>%
     mutate(intensity = intensity / max(intensity) * 100)
   
 }
 
-# 1.The intact glycoform annotations were computationally desialylated to obtain a desialylated in silico spectrum of Myozyme
-df_desial <- desialylate(mofi_results_sial, mofi_results_desial, filter_hit_score=FALSE, filter_peaks = FALSE)
+# 1.The intact glycoform annotations were computationally desialylated to obtain
+# a desialylated in silico spectrum of Myozyme
+df_desial <- desialylate(
+  mofi_results_sial,
+  mofi_results_desial,
+  filter_hit_score = FALSE,
+  filter_peaks = FALSE
+)
 
-# 2. The _in silico_ desialylated masses were filtered based on their correspondence with the experimentally desialylated masses and the fractional abundances of the glycoform annotations were normalized to 100%
-df_desial_filtered <- desialylate(mofi_results_sial, mofi_results_desial, filter_hit_score=FALSE, filter_peaks = TRUE)
+# 2. The _in silico_ desialylated masses were filtered based on their
+# correspondence with the experimentally desialylated masses and the fractional
+# abundances of the glycoform annotations were normalized to 100%
+df_desial_filtered <- desialylate(
+  mofi_results_sial,
+  mofi_results_desial,
+  filter_hit_score = FALSE,
+  filter_peaks = TRUE
+)
 
-# 3. The _in silico_ desialylated relative abundances were filtered with a cut-off (range from 0.01 to 1) and afterwards the fractional abundances of the glycoform annotations were normalized to 100%
-df_desial_filtered_cutoff <- desialylate(mofi_results_sial, mofi_results_desial, filter_hit_score=TRUE, filter_peaks = TRUE, hit_score_cutoff = 0.01)
+# 3. The _in silico_ desialylated relative abundances were filtered with a
+# cut-off (range from 0.01 to 1) and afterwards the fractional abundances of the
+# glycoform annotations were normalized to 100%
+df_desial_filtered_cutoff <- desialylate(
+  mofi_results_sial,
+  mofi_results_desial,
+  filter_hit_score = TRUE,
+  filter_peaks = TRUE,
+  hit_score_cutoff = 0.01
+)
+
+
 
 
 
