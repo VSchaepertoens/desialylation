@@ -7,4 +7,4 @@ The annotations of Myozyme<sup>®</sup> glycoforms were corrected in multiple st
 
 2. The _in silico_ desialylated masses were filtered based on their correspondence with the experimentally desialylated masses and the fractional abundances of the glycoform annotations were normalized to 100%
 
-3. The _in silico_ desialylated relative abundances were filtered with a cut-off (range from 0.01 to 1) and afterwards the fractional abundances of the glycoform annotations were normalized to 100%
+3. The _in silico_ desialylated hit scores were filtered with a cut-off (range from 0.01 to 1) and afterwards the fractional abundances of the glycoform annotations were normalized to 100%
