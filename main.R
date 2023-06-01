@@ -8,7 +8,9 @@ library(janitor)
 mofi_results_sial <-
   read_csv(
     "data/141222_Intact_Myozyme_annotations_v3.csv",
-    skip = 104
+    name_repair = "minimal",
+    skip = 104,
+    col_select = c(1:26)
   ) %>%
   clean_names() %>%
   separate(
@@ -43,8 +45,7 @@ find_interval_mean <- function(interval) {
 }
 
 # calculates desialylated masses, (optional) compares and matches them to experimentally
-# desialylated peaks, (optional) filters hit_scores, (optional) filters peaks of certain mass,
-# bins them with a given width (mass_tolerance), and sums intensity in each bin
+# desialylated peaks, (optional) filters hit_scores and calculates relative abundances
 desialylate <- function(peaks_sial,
                         peaks_desial_exp,
                         mass_desial_peak,
@@ -111,8 +112,7 @@ df_desial <- desialylate(
 )
 
 # 2. The _in silico_ desialylated masses were filtered based on their
-# correspondence with the experimentally desialylated masses and the fractional
-# abundances of the glycoform annotations were normalized to 100%
+# correspondence with the experimentally desialylated masses 
 df_desial_filtered <- desialylate(
   mofi_results_sial,
   mofi_results_desial,
@@ -120,9 +120,8 @@ df_desial_filtered <- desialylate(
   filter_peaks = TRUE
 )
 
-# 3. The _in silico_ desialylated relative abundances were filtered with a
-# cut-off (range from 0.01 to 1) and afterwards the fractional abundances of the
-# glycoform annotations were normalized to 100%
+# 3. The filtered, _in silico_ desialylated hit scores were further 
+# filtered with a cut-off (range from 0.01 to 1) 
 df_desial_filtered_cutoff <- desialylate(
   mofi_results_sial,
   mofi_results_desial,
@@ -130,7 +129,6 @@ df_desial_filtered_cutoff <- desialylate(
   filter_peaks = TRUE,
   hit_score_cutoff = 0.01
 )
-
 
 
 # Plot data ---------------------------------------------------------------
@@ -162,7 +160,7 @@ plot_spectrum(df_desial)
 ggsave("plots/desialylated_spectra_experimental_vs_computational_unfiltered.pdf")
 
 plot_spectrum(df_desial_filtered)
-ggsave("plots/desialylated_spectra_experimental_vs_computational_filtered.wmf")
+ggsave("plots/desialylated_spectra_experimental_vs_computational_filtered.pdf")
 
 plot_spectrum(df_desial_filtered_cutoff)
-ggsave("plots/desialylated_spectra_experimental_vs_computational_filtered_cutoff0.01.wmf")
+ggsave("plots/desialylated_spectra_experimental_vs_computational_filtered_cutoff0.01.pdf")
