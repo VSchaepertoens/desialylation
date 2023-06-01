@@ -7,6 +7,8 @@ The annotations of Myozyme<sup>®</sup> glycoforms were corrected in multiple st
 
 2. The _in silico_ desialylated masses were filtered based on their correspondence with the experimentally desialylated masses
 
-3. (optional) The _in silico_ desialylated hit scores were filtered with a cut-off (range from 0.01 to 1)
+3. The _in silico_ desialylated hit scores were filtered with a cut-off (range from 0.01 to 1)
 
-4. Fractional abundances were calculated for the filtered _in silico_ desialylated masses. Afterwards the fractional abundances were filtered with a given cut-off.
+4. Relative abundances of computational and experimental Myozyme spectra were calculated and plotted
+
+The complete analysis and plotting of the publication figures can be followed step-be-step in desialylation.qmd document which was rendered either as desialylation.html or desialylation.pdf. 
