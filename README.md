@@ -1,5 +1,7 @@
 ## Analysis of desialylated and sialylated spectra of Myozyme<sup>®</sup>
 
+The data used in the following analysis will be published on Zenodo under the following number: DOI:10.5281/zenodo.7458010
+
 This repository contains R code  that was used in Myozyme<sup>®</sup> analysis, to integrate the composition of glycans in experimentally desialylated protein spectrum with _in silico_ desialylated intact glycoform annotations. 
 The annotations of Myozyme<sup>®</sup> glycoforms were corrected in multiple steps:
 
